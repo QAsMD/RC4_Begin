@@ -26,42 +26,54 @@ namespace GGHN_PRGA
                     for (SS[1] = 0; SS[1] < N; SS[1]++)
                         for (SS[2] = 0; SS[2] < N; SS[2]++)
                             for (SS[3] = 0; SS[3] < N; SS[3]++)
+                                for (SS[4] = 0; SS[4] < N; SS[4]++)
+                                    for (SS[5] = 0; SS[5] < N; SS[5]++)
+                                        for (SS[6] = 0; SS[6] < N; SS[6]++)
+                                            for (SS[7] = 0; SS[7] < N; SS[7]++)
+                                                
                             {
+                               
                                 for (int kk = 0; kk < N; kk++)
                                 {//r
                                     S[0] = SS[0];
                                     S[1] = SS[1];
                                     S[2] = SS[2];
                                     S[3] = SS[3];
+                                    S[4] = SS[4];
+                                    S[5] = SS[5];
+                                    S[6] = SS[6];
+                                    S[7] = SS[7];
                                     k = kk;
                                     i = 0;
                                     j = 0;
                                     
-                                    List<List<int>> ControlList = new List<List<int>>();
-                                    List<int> State;
+                                    List<string> ControlList = new List<string>();
                                     deg++;
-                                    string output = "Прогон номер:" + deg.ToString() + "\n";
+                                    count = 0;
+                                    string output = "Прогон номер:" + deg.ToString() + "\r\n"; 
                                     for (int f = 0; f < r; f++)
                                     {
-                                        output += count + ") i = " + (int)i + " j = " + (int)j + " k = " + (int)k;
+                                        output += "\t" + count + ") i = " + (int)i + " j = " + (int)j + " k = " + (int)k;
                                         count++;
+                                        string stateCycle = String.Format("i={0};j={1};k={2};S=", i, j, k);
                                         for (int d = 0; d < S.Length; d++)
                                         {
                                             output += " S[" + d + "] = " + S[d];
+                                            stateCycle += S[d];
                                         }
 
                                         if (ControlList.Count == 0)
-                                            ControlList.Add(new List<int>(){i, j, k, S[0], S[1], S[2], S[3]});
-                                        else{
-                                            State = new List<int>() { i, j, k, S[0], S[1], S[2], S[3] };
-                                            int indexCycle = ControlList.IndexOf(State);
+                                            ControlList.Add(stateCycle);
+                                        else
+                                        {
+                                            var indexCycle = ControlList.IndexOf(stateCycle);
                                             if (indexCycle >= 0)
                                             {
-                                                string outputCFO = String.Format("Прогон номер: {0} \n\t Длина до цикла: {1}\n\t Длина цикла: {2}", deg, indexCycle, count-indexCycle);
+                                                string outputCFO = String.Format("Прогон номер: {0} \n\t Длина до цикла: {1}\n\t Длина цикла: {2}\n\n", deg, indexCycle, count - indexCycle - 1);
                                                 CFO.WriteLine(outputCFO);
-                                                //break;
+                                                break;
                                             }
-         
+
                                         }
                                         i = (i + 1) % N;
                                         j = (j + S[i]) % N;
@@ -69,14 +81,12 @@ namespace GGHN_PRGA
                                         //   z = (byte)((S[(((S[i]) + S[j]) % N)] + k) % M);
                                         S[(S[i] + S[j]) % N] = (byte)((k + S[i]) % M);
 
-                                        output += '\n';
-                                        Console.WriteLine(output);
-                                        FileOut.WriteLine(output);
+                                        output += "\r\n";
 
                                         //  return z;            
                                     }
-                                    count = 1;
-                                    FileOut.WriteLine();
+                                    Console.WriteLine("Номер прохода:" + deg);
+                                    FileOut.WriteLine(output);
                                 }
                                 
                             }
