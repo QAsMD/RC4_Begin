@@ -16,7 +16,9 @@ namespace GGHN_PRGA
             int[] SS = new int[N];
             int k = 0;
             int count = 1;
+            int deg = 0;
             System.IO.StreamWriter FileOut = new System.IO.StreamWriter("output.txt");
+            System.IO.StreamWriter CFO = new System.IO.StreamWriter("CFO.txt");
             //k
           
             //S
@@ -32,15 +34,35 @@ namespace GGHN_PRGA
                                     S[2] = SS[2];
                                     S[3] = SS[3];
                                     k = kk;
+                                    i = 0;
+                                    j = 0;
+                                    
+                                    List<List<int>> ControlList = new List<List<int>>();
+                                    List<int> State;
+                                    deg++;
+                                    string output = "Прогон номер:" + deg.ToString() + "\n";
                                     for (int f = 0; f < r; f++)
                                     {
-                                        string output = count + ") i = " + (int)i + " j = " + (int)j + " k = " + (int)k;
+                                        output += count + ") i = " + (int)i + " j = " + (int)j + " k = " + (int)k;
                                         count++;
                                         for (int d = 0; d < S.Length; d++)
                                         {
                                             output += " S[" + d + "] = " + S[d];
                                         }
 
+                                        if (ControlList.Count == 0)
+                                            ControlList.Add(new List<int>(){i, j, k, S[0], S[1], S[2], S[3]});
+                                        else{
+                                            State = new List<int>() { i, j, k, S[0], S[1], S[2], S[3] };
+                                            int indexCycle = ControlList.IndexOf(State);
+                                            if (indexCycle >= 0)
+                                            {
+                                                string outputCFO = String.Format("Прогон номер: {0} \n\t Длина до цикла: {1}\n\t Длина цикла: {2}", deg, indexCycle, count-indexCycle);
+                                                CFO.WriteLine(outputCFO);
+                                                //break;
+                                            }
+         
+                                        }
                                         i = (i + 1) % N;
                                         j = (j + S[i]) % N;
                                         k = (k + S[j]) % M;
@@ -53,12 +75,15 @@ namespace GGHN_PRGA
 
                                         //  return z;            
                                     }
+                                    count = 1;
+                                    FileOut.WriteLine();
                                 }
-                                FileOut.WriteLine();
+                                
                             }
                 
             
             FileOut.Close();
+            CFO.Close();
             return 0;
         }
 
