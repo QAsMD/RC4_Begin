@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Numerics;
 
 namespace GGHN_PRGA
 {
@@ -16,9 +17,10 @@ namespace GGHN_PRGA
             int[] SS = new int[N];
             int k = 0;
             int count = 1;
-            int deg = 0;
+            BigInteger deg = 0;
             System.IO.StreamWriter FileOut = new System.IO.StreamWriter("output.txt");
             System.IO.StreamWriter CFO = new System.IO.StreamWriter("CFO.txt");
+          //  System.IO.StreamWriter ZCFO = new System.IO.StreamWriter("Z CFO.txt");
             //k
           
             //S
@@ -46,14 +48,18 @@ namespace GGHN_PRGA
                                     k = kk;
                                     i = 0;
                                     j = 0;
-                                    
+
+                                    bool stateZ = false;
+                                    bool stateCFO = false;
+
                                     List<string> ControlList = new List<string>();
+                                    List<string> ZControlList = new List<string>();
                                     deg++;
                                     count = 0;
                                     string output = "Прогон номер:" + deg.ToString() + "\r\n"; 
                                     for (int f = 0; f < r; f++)
                                     {
-                                        output += "\t" + count + ") i = " + (int)i + " j = " + (int)j + " k = " + (int)k;
+                                       output += "\t" + count + ") i = " + (int)i + " j = " + (int)j + " k = " + (int)k;
                                         count++;
                                         string stateCycle = String.Format("i={0};j={1};k={2};S=", i, j, k);
                                         for (int d = 0; d < S.Length; d++)
@@ -62,38 +68,79 @@ namespace GGHN_PRGA
                                             stateCycle += S[d];
                                         }
 
+                                       
                                         if (ControlList.Count == 0)
                                             ControlList.Add(stateCycle);
                                         else
                                         {
                                             var indexCycle = ControlList.IndexOf(stateCycle);
-                                            if (indexCycle >= 0)
+                                            if (indexCycle >= 0 && !stateCFO)
                                             {
-                                                string outputCFO = String.Format("Прогон номер: {0} \n\t Длина до цикла: {1}\n\t Длина цикла: {2}\n\n", deg, indexCycle, count - indexCycle - 1);
-                                                CFO.WriteLine(outputCFO);
-                                                break;
+                                              //  FileOut.WriteLine(output);
+                                                stateCFO = true;
+                                               string outputCFO = String.Format("Прогон номер: {0} \n\t Длина до цикла: {1}\n\t Длина цикла: {2} \n Начальное состоние: S= {3} {4} {5} {6} {7} {8} {9} {10}, k = {11}\n", deg, indexCycle, count - indexCycle - 1,S[0], S[1], S[2], S[3], S[4], S[5], S[6], S[7],k);
+                                              // string outputCFO = String.Format("Прогон номер: {0} \n\t Длина до цикла: {1}\n\t Длина цикла: {2} \n Начальное состоние: S= {3} {4} {5} {6} , k = {7}\n", deg, indexCycle, count - indexCycle - 1, S[0], S[1], S[2], S[3], k);
+
+                                             
+                                                    CFO.WriteLine(outputCFO);
+                                                 //   break;
                                             }
 
                                         }
+
+
                                         i = (i + 1) % N;
                                         j = (j + S[i]) % N;
                                         k = (k + S[j]) % M;
-                                        //   z = (byte)((S[(((S[i]) + S[j]) % N)] + k) % M);
+                                        int z = (S[(((S[i]) + S[j]) % N)] + k) % M;
                                         S[(S[i] + S[j]) % N] = (byte)((k + S[i]) % M);
 
+
+                                        output += "   z = " + z;
                                         output += "\r\n";
+                                        if (stateCFO)
+                                        {
+                                            FileOut.WriteLine(output);
+                                            break;
+                                        }
+                                      ////  output += " z=" + z;
+                                      ////  output += "\r\n";
+
+                                      //          string ZstateCycle = String.Format("z={0}",z);
+                                                
+                                      //          if (ZControlList.Count == 0)
+                                      //              ZControlList.Add(ZstateCycle);
+                                      //          else
+                                      //          {
+                                      //              var ZindexCycle = ZControlList.IndexOf(ZstateCycle);
+                                      //             // if (ZindexCycle >= 0 && stateCFO && !stateZ)
+                                      //              if(ZindexCycle >= 0)
+                                      //              {
+                                      //                  stateZ = true;
+                                      //                  string ZoutputCFO = String.Format("Прогон номер: {0} \n\t Длина до цикла: {1}\n\t Длина цикла: {2}\n\n", deg, ZindexCycle, count - ZindexCycle - 1);
+                                      //           //       ZCFO.WriteLine(ZoutputCFO);
+                                                        
+                                      //              }
+                                      //          }
+
+
+
+
+                                        
 
                                         //  return z;            
                                     }
+
                                     Console.WriteLine("Номер прохода:" + deg);
-                                    FileOut.WriteLine(output);
+                                //    FileOut.WriteLine(output);
                                 }
                                 
                             }
                 
             
-            FileOut.Close();
+           FileOut.Close();
             CFO.Close();
+         //   ZCFO.Close();
             return 0;
         }
 
