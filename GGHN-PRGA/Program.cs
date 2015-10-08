@@ -18,8 +18,10 @@ namespace GGHN_PRGA
             int k = 0;
             int count = 1;
             BigInteger deg = 0;
-            System.IO.StreamWriter FileOut = new System.IO.StreamWriter("output.txt");
-            System.IO.StreamWriter CFO = new System.IO.StreamWriter("CFO.txt");
+            System.IO.StreamWriter FileOut = new System.IO.StreamWriter("n= " + n + " m = " + m + " r = " + r + " output.txt" );
+            FileOut.WriteLine("Начальные условия n = " + n + " m = " + m + " r = " + r);
+            System.IO.StreamWriter CFO = new System.IO.StreamWriter("n= " + n + " m = " + m + " r = " + r + "CFO.txt");
+            CFO.WriteLine("Начальные условия n = " + n + " m = " + m + " r = " + r);
           //  System.IO.StreamWriter ZCFO = new System.IO.StreamWriter("Z CFO.txt");
             //k
           
@@ -28,10 +30,10 @@ namespace GGHN_PRGA
                     for (SS[1] = 0; SS[1] < N; SS[1]++)
                         for (SS[2] = 0; SS[2] < N; SS[2]++)
                             for (SS[3] = 0; SS[3] < N; SS[3]++)
-                                for (SS[4] = 0; SS[4] < N; SS[4]++)
-                                    for (SS[5] = 0; SS[5] < N; SS[5]++)
-                                        for (SS[6] = 0; SS[6] < N; SS[6]++)
-                                            for (SS[7] = 0; SS[7] < N; SS[7]++)
+                                //for (SS[4] = 0; SS[4] < N; SS[4]++)
+                                //    for (SS[5] = 0; SS[5] < N; SS[5]++)
+                                //        for (SS[6] = 0; SS[6] < N; SS[6]++)
+                                //            for (SS[7] = 0; SS[7] < N; SS[7]++)
                                                 
                             {
                                
@@ -41,14 +43,14 @@ namespace GGHN_PRGA
                                     S[1] = SS[1];
                                     S[2] = SS[2];
                                     S[3] = SS[3];
-                                    S[4] = SS[4];
-                                    S[5] = SS[5];
-                                    S[6] = SS[6];
-                                    S[7] = SS[7];
+                                    //S[4] = SS[4];
+                                    //S[5] = SS[5];
+                                    //S[6] = SS[6];
+                                    //S[7] = SS[7];
                                     k = kk;
                                     i = 0;
                                     j = 0;
-
+                                    
                                     bool stateZ = false;
                                     bool stateCFO = false;
 
@@ -56,6 +58,7 @@ namespace GGHN_PRGA
                                     List<string> ZControlList = new List<string>();
                                     deg++;
                                     count = 0;
+                                    
                                     string output = "Прогон номер:" + deg.ToString() + "\r\n"; 
                                     for (int f = 0; f < r; f++)
                                     {
@@ -78,8 +81,8 @@ namespace GGHN_PRGA
                                             {
                                               //  FileOut.WriteLine(output);
                                                 stateCFO = true;
-                                               string outputCFO = String.Format("Прогон номер: {0} \n\t Длина до цикла: {1}\n\t Длина цикла: {2} \n Начальное состоние: S= {3} {4} {5} {6} {7} {8} {9} {10}, k = {11}\n", deg, indexCycle, count - indexCycle - 1,S[0], S[1], S[2], S[3], S[4], S[5], S[6], S[7],k);
-                                              // string outputCFO = String.Format("Прогон номер: {0} \n\t Длина до цикла: {1}\n\t Длина цикла: {2} \n Начальное состоние: S= {3} {4} {5} {6} , k = {7}\n", deg, indexCycle, count - indexCycle - 1, S[0], S[1], S[2], S[3], k);
+                                              //string outputCFO = String.Format("Прогон номер: {0} \n\t Длина до цикла: {1}\n\t Длина цикла: {2} \n Начальное состоние: S= {3} {4} {5} {6} {7} {8} {9} {10}, k = {11}\n", deg, indexCycle, count - indexCycle - 1,S[0], S[1], S[2], S[3], S[4], S[5], S[6], S[7],k);
+                                              string outputCFO = String.Format("Прогон номер: {0} \n\t Длина до цикла: {1}\n\t Длина цикла: {2} \n Начальное состоние: S= {3} {4} {5} {6} , k = {7}\n", deg, indexCycle, count - indexCycle - 1, S[0], S[1], S[2], S[3], k);
 
                                              
                                                     CFO.WriteLine(outputCFO);
@@ -131,13 +134,23 @@ namespace GGHN_PRGA
                                         //  return z;            
                                     }
 
-                                    Console.WriteLine("Номер прохода:" + deg);
+                                    Console.Write("Номер прохода:" + deg + " ");
+                                    if (stateCFO)
+                                    {
+                                        Console.WriteLine("ЦИКЛ!!!");
+                                        FileOut.Flush();
+                                        CFO.Flush();
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine();
+                                    }
                                 //    FileOut.WriteLine(output);
                                 }
                                 
                             }
+
                 
-            
            FileOut.Close();
             CFO.Close();
          //   ZCFO.Close();
